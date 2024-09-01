@@ -1,6 +1,7 @@
 Flask
 Gunicorn
 Tensorflow
+langchain_core.prompts
 langchain_groq
 dotenv
 flask_sqlalchemy
