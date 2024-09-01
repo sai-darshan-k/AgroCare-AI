@@ -18,11 +18,12 @@ header {
     display: transparent;
     align-items: center;
     justify-content: center;
+    
 }
 
 .logo img {
     height: 50px; /* Adjust image height if needed */
-    margin-right: 20px;
+    margin-right: 10px;
     background-color: transparent; /* Ensure background is transparent */
 }
 
@@ -188,7 +189,7 @@ main {
     align-items: center;
     height: 100vh;
     padding: 50px;
-    background-color: #f9f9f9;
+    background-color:None;
 }
 
 .login-form, .signup-form {

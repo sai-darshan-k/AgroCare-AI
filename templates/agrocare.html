@@ -6,20 +6,110 @@
     <title>AgroCare</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        /* Add this CSS to center the button container */
+        body {
+            background-image: url('{{ url_for("static", filename="bg15.avif") }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            color: #131111;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 35px;
+            margin: 0;
+        }
+
+        .title h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
         .button-container {
             display: flex;
-            justify-content: center; /* Center buttons horizontally */
-            align-items: center; /* Center buttons vertically */
-            margin-bottom: 20px; /* Space below the buttons */
-            gap: 10px; /* Space between buttons */
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .question-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question-input input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .upload-btn, .submit-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .examples {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .examples ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .examples li {
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #007BFF;
+        }
+
+        .examples li:hover {
+            text-decoration: underline;
+        }
+
+        .uploaded-image img {
+            max-width: 100%;
+            margin: 20px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .bot-response {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="{{ url_for('static', filename='Ag logo1.png') }}" alt="AgroCare">
+            <img src="{{ url_for('static', filename='mainlogo.png') }}" alt="AgroCare">
             <h1>AgroCare</h1>
         </div>
         <div class="title">
@@ -47,14 +137,14 @@
         <div class="examples" id="examples">
             <p>Few examples to ask!</p>
             <ul>
-                <li onclick="insertExample('How to improve soil condition?')">How to improve soil condition?</li>
-                <li onclick="insertExample('What is the best time to plant okra in North India?')">What is the best time to plant okra in North India?</li>
-                <li onclick="insertExample('What are the most effective methods for pest control on cabbage?')">What are the most effective methods for pest control on cabbage?</li>
-                <li onclick="insertExample('What are the most effective methods for pest control on mango tree?')">What are the most effective methods for pest control on mango tree?</li>
+                <li onclick="insertExample('What are the benefits of crop rotation?')">What are the benefits of crop rotation?</li>
+                <li onclick="insertExample('How can I conserve water in my farming practices?')">How can I conserve water in my farming practices?</li>
+                <li onclick="insertExample('What fertilizers are best for organic farming?')">What fertilizers are best for organic farming?</li>
+                <li onclick="insertExample('How can I protect my crops from frost damage?')">How can I protect my crops from frost damage?</li>
             </ul>
         </div>
         <div class="uploaded-image" id="uploadedImage" style="display: none;">
-            <img id="imagePreview" src="" alt="Uploaded Image" style="max-width: 100%; margin: 20px 0;">
+            <img id="imagePreview" src="" alt="Uploaded Image">
         </div>
         <div class="bot-response" id="botResponse"></div>
     </main>

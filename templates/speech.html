@@ -5,11 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech Functionality - AgroCare</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-image: url('{{ url_for("static", filename="bg4.webp") }}');
+            background-size: cover;
+            background-position: right;
+            font-family: Arial, sans-serif;
+            color: #eff5ef;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+            background-color: transparent;
+        }
+        .logo, .title, .language-switcher {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .title h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .language-switcher button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .language-switcher button:hover {
+            background-color: #45a049;
+        }
+        .speech-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
+        #startSpeechButton, .go-back-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        #startSpeechButton:hover, .go-back-button:hover {
+            background-color: #45a049;
+        }
+        .qa-container {
+            margin-top: 30px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+        .completion {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="{{ url_for('static', filename='Ag logo1.png') }}" alt="AgroCare">
+            <img src="{{ url_for('static', filename='mainlogo.png') }}" alt="AgroCare">
             <h1>AgroCare</h1>
         </div>
         <div class="title">
