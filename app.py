@@ -16,8 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/sign up'  # Your database name
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/sign up'
 app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")
 db = SQLAlchemy(app)
 

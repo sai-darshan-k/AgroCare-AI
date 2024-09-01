@@ -1,0 +1,9 @@
+Flask
+Gunicorn
+Tensorflow
+Tensorflow.python
+langchain_core.output_parsers
+langchain_core.prompts
+langchain_groq
+dotenv
+flask_sqlalchemy

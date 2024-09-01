@@ -19,11 +19,11 @@
 <body>
     <header>
         <div class="logo">
-            <img src="{{ url_for('static', filename='Ag logo.jpg') }}" alt="AgroCare">
+            <img src="{{ url_for('static', filename='Ag logo1.png') }}" alt="AgroCare">
             <h1>AgroCare</h1>
         </div>
         <div class="title">
-            <h2>Transform lives with Questions</h2>
+            <h2>AI SOLUTIONS FOR MODERN AGRICULTURE</h2>
         </div>
         <div class="language-switcher">
             <button id="logoutButton" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
@@ -38,10 +38,10 @@
             <input type="text" id="questionInput" placeholder="Type your question..." onfocus="clearExamples()" oninput="clearExamples()">
             <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="uploadImage();">
             <button class="upload-btn" onclick="document.getElementById('imageInput').click();">
-                📷
+                <img src="{{ url_for('static', filename='cam2.png') }}" alt="Camera" style="width: 30px; height: 30px;">
             </button>
             <button class="submit-btn" onclick="submitQuestion()">
-                <img src="{{ url_for('static', filename='send2.jpg') }}" alt="Send">
+                <img src="{{ url_for('static', filename='send1.png') }}" alt="Send">
             </button>
         </div>
         <div class="examples" id="examples">
