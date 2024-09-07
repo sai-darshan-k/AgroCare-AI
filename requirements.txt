@@ -1,6 +1,7 @@
-Flask
-Gunicorn
+Flask==3.0.3
+gunicorn
 tensorflow==2.17.0
-langchain_groq
-dotenv
-flask_sqlalchemy
+langchain==0.2.11
+langchain-groq==0.1.6
+python-dotenv==1.0.1
+Flask-SQLAlchemy==3.1.1
