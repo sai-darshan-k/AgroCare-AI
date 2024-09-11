@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import logging
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+import requests  # For weather API integration
+import gdown  # To download the model from Google Drive
 
 # Load environment variables
 load_dotenv()
@@ -23,8 +25,23 @@ db = SQLAlchemy(app)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-# Load the model
+# Google Drive link for the model
+drive_link = "https://drive.google.com/uc?id=1BWj3__QLBGIR8mmspc6Hp8eP7-lBGqfC"  # Model ID extracted
 model_path = os.getenv("MODEL_PATH", "my_model.keras")
+
+# Function to download model from Google Drive
+def download_model_from_drive(drive_link, destination):
+    if not os.path.exists(destination):
+        try:
+            logging.info('Downloading model from Google Drive...')
+            gdown.download(drive_link, destination, quiet=False)
+            logging.info('Model downloaded successfully.')
+        except Exception as e:
+            logging.error(f"Error downloading model: {str(e)}")
+            raise e
+
+# Download and load the model
+download_model_from_drive(drive_link, model_path)
 model = load_model(model_path)
 logging.info('Model loaded. Check http://127.0.0.1:5000/')
 
@@ -35,14 +52,6 @@ prompt = """(system: You are a crop assistant specializing in agriculture. If th
 promptinstance = ChatPromptTemplate.from_template(prompt)
 
 labels = {0: 'Healthy', 1: 'Powdery', 2: 'Rust'}
-
-def getResult(image_path):
-    img = load_img(image_path, target_size=(225, 225))
-    x = img_to_array(img)
-    x = x.astype('float32') / 255.
-    x = np.expand_dims(x, axis=0)
-    predictions = model.predict(x)[0]
-    return predictions
 
 # Define User model
 class User(db.Model):
@@ -146,11 +155,84 @@ def upload():
         logging.error(f"Error processing image: {str(e)}")
         return jsonify({'prediction': f'Error processing image: {str(e)}'}), 500
 
+def getResult(image_path):
+    img = load_img(image_path, target_size=(225, 225))
+    x = img_to_array(img)
+    x = x.astype('float32') / 255.
+    x = np.expand_dims(x, axis=0)
+    predictions = model.predict(x)[0]
+    return predictions
+
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)  # Remove user from session
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
+
+# Weather API integration
+WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
+WEATHER_API_KEY = "e10f65c590d431935edaaf55555c6146"
+
+@app.route('/weather')
+def weather():
+    lat, lon = 12, 77  # Set the coordinates for the map
+    weather_data = fetch_weather(lat, lon)
+
+    if weather_data:
+        main = weather_data.get('main', {})
+        wind = weather_data.get('wind', {})
+        weather_details = weather_data.get('weather', [{}])[0]
+        sys = weather_data.get('sys', {})
+
+        weather_info = {
+            'name': weather_data.get('name', 'Unknown'),
+            'country': sys.get('country', 'Unknown'),
+            'temperature': main.get('temp', 'Not available'),
+            'feels_like': main.get('feels_like', 'Not available'),
+            'description': weather_details.get('description', 'Not available'),
+            'humidity': main.get('humidity', 'Not available'),
+            'pressure': main.get('pressure', 'Not available'),
+            'wind_speed': wind.get('speed', 'Not available'),
+            'wind_gust': wind.get('gust', 'Not available'),
+            'visibility': weather_data.get('visibility', 'Not available'),
+            'lat': lat,
+            'lon': lon
+        }
+    else:
+        weather_info = {
+            'name': 'Not available',
+            'country': 'Not available',
+            'temperature': 'Not available',
+            'feels_like': 'Not available',
+            'description': 'Not available',
+            'humidity': 'Not available',
+            'pressure': 'Not available',
+            'wind_speed': 'Not available',
+            'wind_gust': 'Not available',
+            'visibility': 'Not available',
+            'lat': lat,
+            'lon': lon
+        }
+
+    return render_template('weather.html', weather_data=weather_info)
+
+def fetch_weather(lat, lon):
+    # OpenWeatherMap API URL with your API key
+    WEATHER_API_KEY = "e10f65c590d431935edaaf55555c6146"
+    WEATHER_API_URL = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric"
+    
+    try:
+        response = requests.get(WEATHER_API_URL)
+        response.raise_for_status()  # Raise an error for bad status codes
+        weather_data = response.json()  # Parse the JSON response
+        logging.info(f"Weather data fetched: {weather_data}")
+
+        # Return the weather data
+        return weather_data
+    
+    except Exception as e:
+        logging.error(f"Error fetching weather data: {str(e)}")
+        return None
 
 if __name__ == '__main__':
     with app.app_context():

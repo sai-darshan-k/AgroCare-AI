@@ -122,8 +122,9 @@
     <main>
         <div class="button-container">
             <button id="letsTalkButton" onclick="window.location.href='{{ url_for('speech') }}'">Let's Talk</button>
+            <button id="weatherButton" onclick="window.location.href='{{ url_for('weather') }}'">Weather</button>
             <button id="refresh-button" onclick="location.reload();">Refresh</button>
-        </div>
+        </div>        
         <div class="question-input">
             <input type="text" id="questionInput" placeholder="Type your question..." onfocus="clearExamples()" oninput="clearExamples()">
             <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="uploadImage();">

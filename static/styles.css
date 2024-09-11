@@ -410,6 +410,22 @@ main {
 #refresh-button:hover {
     background-color: darkgreen; /* Darker green on hover */
 }
+/* Style for the Weather button */
+#weatherButton {
+    background-color: green; /* Green background */
+    color: white; /* White text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for the Weather button */
+#weatherButton:hover {
+    background-color: darkgreen; /* Darker green on hover */
+}
 
 /* Camera button without background color */
 #cameraButton {
