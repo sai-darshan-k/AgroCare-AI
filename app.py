@@ -9,8 +9,6 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 import logging
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 import requests  # For weather API integration
 import gdown  # To download the model from Google Drive
 
@@ -18,9 +16,7 @@ import gdown  # To download the model from Google Drive
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/sign up'
 app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")
-db = SQLAlchemy(app)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -47,68 +43,22 @@ logging.info('Model loaded. Check http://127.0.0.1:5000/')
 
 # Load the language model
 groqllm = ChatGroq(model="llama3-8b-8192", temperature=0)
-prompt = """(system: You are a crop assistant specializing in agriculture. If the user's question is related to agriculture, provide a detailed and helpful response. If the question is unrelated to agriculture, respond with "I'm sorry, I can only assist with agriculture-related queries.)
+prompt = """(system: You are a crop assistant specializing in agriculture. If the user's question is related to agriculture, provide a detailed and helpful response. If the question is unrelated to agriculture, respond with "I'm sorry, I can only assist with agriculture-related queries.")
 (user: Question: {question})"""
 promptinstance = ChatPromptTemplate.from_template(prompt)
 
 labels = {0: 'Healthy', 1: 'Powdery', 2: 'Rust'}
 
-# Define User model
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
-
 @app.route('/')
 def index():
     return render_template('login.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        
-        # Authenticate user
-        user = User.query.filter_by(email=email).first()
-        
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id  # Store user ID in session
-            flash('', 'success')
-            return redirect(url_for('agrocare')) 
-        else:
-            flash('Invalid email or password. Please try again.', 'danger')
-
-    return render_template('login.html')
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        hashed_password = generate_password_hash(password)  # Hash the password
-        new_user = User(email=email, password=hashed_password)
-        
-        # Add the new user to the database
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Sign up successful! You can now log in.', 'success')
-        return redirect(url_for('login'))
-
-    return render_template('signup.html')
-
 @app.route('/agrocare')
 def agrocare():
-    if 'user_id' not in session:  # Check if user is logged in
-        flash('You need to log in to access this page.', 'danger')
-        return redirect(url_for('login'))
     return render_template('agrocare.html')
 
 @app.route('/speech')
 def speech():
-    if 'user_id' not in session:  # Check if user is logged in
-        flash('You need to log in to access this page.', 'danger')
-        return redirect(url_for('login'))
     return render_template('speech.html')
 
 @app.route('/ask', methods=['POST'])
@@ -162,16 +112,6 @@ def getResult(image_path):
     x = np.expand_dims(x, axis=0)
     predictions = model.predict(x)[0]
     return predictions
-
-@app.route('/logout')
-def logout():
-    session.pop('user_id', None)  # Remove user from session
-    flash('You have been logged out.', 'success')
-    return redirect(url_for('login'))
-
-# Weather API integration
-WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
-WEATHER_API_KEY = "e10f65c590d431935edaaf55555c6146"
 
 @app.route('/weather')
 def weather():
@@ -229,12 +169,10 @@ def fetch_weather(lat, lon):
 
         # Return the weather data
         return weather_data
-    
+
     except Exception as e:
         logging.error(f"Error fetching weather data: {str(e)}")
         return None
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Create database tables
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
