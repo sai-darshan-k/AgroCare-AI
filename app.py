@@ -47,15 +47,16 @@ prompt = """(system: You are a crop assistant specializing in agriculture. If th
 (user: Question: {question})"""
 promptinstance = ChatPromptTemplate.from_template(prompt)
 
+# Labels for image classification
 labels = {0: 'Healthy', 1: 'Powdery', 2: 'Rust'}
-
-@app.route('/')
-def index():
-    return render_template('login.html')
 
 @app.route('/agrocare')
 def agrocare():
     return render_template('agrocare.html')
+
+@app.route('/')
+def index():
+    return redirect(url_for('agrocare'))
 
 @app.route('/speech')
 def speech():
